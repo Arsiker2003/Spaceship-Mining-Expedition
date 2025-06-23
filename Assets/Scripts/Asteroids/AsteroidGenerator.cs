@@ -35,6 +35,9 @@ public class AsteroidGenerator : MonoBehaviour
 
         // Генеруємо колайдер
         GenerateCollider(shapeController, polyCollider);
+
+        // Генеруємо деталі на астероїді (тріщини, кратери)
+        asteroid.GetComponent<AsteroidDetailManager>().AddDetailsToAsteroid();
     }
 
     private void GenerateShape(SpriteShapeController shapeController)
