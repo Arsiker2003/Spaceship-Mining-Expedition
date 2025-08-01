@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.U2D;
-
+/// <summary>
+/// Class that creates big asteroid containing ore to mine
+/// </summary>
 public class AsteroidGenerator : MonoBehaviour
 {
     [SerializeField] int minPoints = 6;

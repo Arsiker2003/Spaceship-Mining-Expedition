@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// Class that handles tool switching, 
+/// needed because only one tool should work simultaneously
+/// </summary>
 public class ToolManager : MonoBehaviour
 {
+    /// <summary>
+    /// Enumaration for all existing tools of the ship
+    /// </summary>
     public enum ToolType
     {
         None,
@@ -11,23 +17,32 @@ public class ToolManager : MonoBehaviour
         Gun,
         Scanner
     }
-
-    private ToolType activeTool = ToolType.None;
-
+    /// <summary>
+    /// Array of all scripts that connected to drills
+    /// </summary>
     public MonoBehaviour[] drillScripts;
+    /// <summary>
+    /// Array of all scripts that connected to side cannons
+    /// </summary>
     public MonoBehaviour[] gunScripts;
     //public MonoBehaviour scanner;
-
+    /// <summary>
+    /// Reference to the transform component of drills, 'cause they will move 
+    /// </summary>
     public Transform drills;
+    /// <summary>
+    /// Time in seconds spent for drills to move
+    /// </summary>
     public float drillsMoveDuration = 2f;
 
+    private ToolType activeTool = ToolType.None;
     void Start()
     {
         DeactivateAllTools();
     }
     void Update()
     {
-        // Перевіряємо натискання клавіш для перемикання інструментів
+        // Switch instruments according to pressed number key
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ActivateTool(ToolType.Drill);
@@ -41,7 +56,11 @@ public class ToolManager : MonoBehaviour
             ActivateTool(ToolType.Scanner);
         }
     }
-
+    /// <summary>
+    /// Activates or disables all scripts in array
+    /// </summary>
+    /// <param name="scripts">Array of scripts to enable or disable</param>
+    /// <param name="isActive">Activation or disabling param</param>
     void SetScriptsActive(MonoBehaviour[] scripts, bool isActive)
     {
         foreach (MonoBehaviour script in scripts)
@@ -49,18 +68,22 @@ public class ToolManager : MonoBehaviour
             script.enabled = isActive;
         }
     }
+    /// <summary>
+    /// Deactivates all tools of ship
+    /// </summary>
     void DeactivateAllTools()
     {
         StartCoroutine(DeactivateDrills());
         SetScriptsActive(gunScripts, false);
         //scanner.enabled = false;
     }
+    /// <summary>
+    /// Activates one tool while all others will be deactivated
+    /// </summary>
+    /// <param name="toolType">Instrument name from enum</param>
     void ActivateTool(ToolType toolType)
     {
-        // Деактивуємо всі інструменти
         DeactivateAllTools();
-
-        // Активуємо вибраний інструмент
         switch (toolType)
         {
             case ToolType.Drill:
@@ -73,11 +96,12 @@ public class ToolManager : MonoBehaviour
                 //scanner.enabled = true;
                 break;
         }
-
-        // Оновлюємо активний інструмент
         activeTool = toolType;
     }
-
+    /// <summary>
+    /// Return name of tool currently working
+    /// </summary>
+    /// <returns>Name of active tool</returns>
     public ToolType GetActiveTool()
     {
         return activeTool;
@@ -94,7 +118,11 @@ public class ToolManager : MonoBehaviour
         yield return StartCoroutine(MoveDrills(3.75f));
         SetScriptsActive(drillScripts, true);
     }
-
+    /// <summary>
+    /// Move the drilling tool relatively to center of the ship
+    /// </summary>
+    /// <param name="finalPosition">Desired vertical coordinate</param>
+    /// <returns></returns>
     IEnumerator MoveDrills(float finalPosition)
     {
         float startPosition = drills.localPosition.y;
@@ -107,8 +135,5 @@ public class ToolManager : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        
-
-        
     }
 }

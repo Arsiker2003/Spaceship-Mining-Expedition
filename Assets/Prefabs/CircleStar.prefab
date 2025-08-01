@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7489621757371652519}
   - component: {fileID: -8915872000509536219}
   m_Layer: 0
-  m_Name: "\u041A\u0440\u0443\u0433\u043B\u0430 \u0437\u0456\u0440\u043A\u0430"
+  m_Name: CircleStar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
