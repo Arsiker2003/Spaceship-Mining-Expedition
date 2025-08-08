@@ -1,36 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 /// <summary>
-/// Class that literally creates visual "rotation" of drills
+/// Visually simulates drill rotation by offsetting the texture.
+/// This creates an illusion of spinning without rotating the object.
 /// </summary>
 public class DrillRotation : MonoBehaviour
 {
-    /// <summary>
-    /// Rotation speed of the drill texture
-    /// </summary>
+    /// <summary>Speed of texture offset, controlling visual spin speed.</summary>
     public float rotationSpeed = 1.0f;
+
     private Material material;
     private Vector2 offset;
 
-    void Start()
+    private void Start()
     {
-        // Отримати матеріал з Sprite Renderer
+        // Get the material from the sprite (assumes material uses a shader that supports offset)
         material = GetComponent<SpriteRenderer>().material;
         offset = material.mainTextureOffset;
     }
 
-    void Update()
+    private void Update()
     {
-        if (this.gameObject.name == "LeftDrill")
+        // Determine direction of fake rotation based on object name
+        if (gameObject.name == "LeftDrill")
         {
             offset.x -= Time.deltaTime * rotationSpeed;
-            if (offset.x < -0.2) offset.x = 0.2f;
+            if (offset.x < -0.2f) offset.x = 0.2f; // Reset loop
         }
-        if (this.gameObject.name == "RightDrill")
+        else if (gameObject.name == "RightDrill")
         {
             offset.x += Time.deltaTime * rotationSpeed;
-            if (offset.x > 0.2) offset.x = -0.2f;
+            if (offset.x > 0.2f) offset.x = -0.2f; // Reset loop
         }
 
         material.mainTextureOffset = offset;

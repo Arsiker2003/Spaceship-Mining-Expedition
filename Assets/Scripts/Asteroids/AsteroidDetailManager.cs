@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 using UnityEngine.U2D;
-
+/// <summary>
+/// Class that adds details on asteroid
+/// </summary>
 public class AsteroidDetailManager : MonoBehaviour
 {
-    public List<Sprite> detailSprites; // Кратери, тріщини, виступи
+    /// <summary>
+    /// List of sprites of all possible details
+    /// </summary>
+    public List<Sprite> detailSprites;
     public int minDetails = 2;
     public int maxDetails = 6;
 
@@ -27,32 +32,30 @@ public class AsteroidDetailManager : MonoBehaviour
             detailSprites.AddRange(loadedSprites);
         }
     }
+    /// <summary>
+    /// Create details inside of the asteroid's sprite shape and withount intersections
+    /// </summary>
     public void AddDetailsToAsteroid()
     {
         int detailCount = Random.Range(minDetails, this.maxDetails + 1);
-
-        
-        // 1. Отримати сплайн
         Spline spline = GetComponent<SpriteShapeController>().spline;
         int pointCount = spline.GetPointCount();
-
-        // 2. Обмежити кількість деталей (наприклад: максимум половина кількості точок)
+        // Add limit to amount of details
         int maxDetails = Mathf.Min(pointCount / 2, detailSprites.Count);
-
+        // List of used positions to exclude possibility that details will spawn
+        // in same places
         List<Vector2> usedPositions = new List<Vector2>();
         for (int i = 0; i < maxDetails; i++)
         { 
-            // --- 3. Вибираємо випадкову точку на сплайні ---
             int index = Random.Range(0, pointCount);
             Vector2 point = spline.GetPosition(index);
             Vector2 toCenter = (Vector2)transform.position - point;
             Vector2 inwardDir = toCenter.normalized;
-            
+            // Move detail slightly "inside" of asteroid, to make every detail
+            // looks like it is on the asteroid. This also eliminates
+            // possibility that detail could be beyond asteroid sprite
+            float offset = Random.Range(3f + minScale, 2 * maxScale); 
 
-            // 6. Зміщуємо точку вглиб форми
-            float offset = Random.Range(3f + minScale, 2 * maxScale); // "глибина" деталі
-
-            
             int attempts = 0;
             int placed = 0;
             while (placed < detailCount && attempts < 20)
@@ -78,10 +81,15 @@ public class AsteroidDetailManager : MonoBehaviour
                 }
                 attempts++;
             }
-
-            
         }
     }
+    /// <summary>
+    /// Define if position for new detail is far enough from other details
+    /// </summary>
+    /// <param name="newPos">Position for new detail</param>
+    /// <param name="existing">List of used positions</param>
+    /// <param name="minDistance">Minimum distance between details</param>
+    /// <returns>Returns "true" when distance between details is bigger than minimum</returns>
     bool IsTooClose(Vector2 newPos, List<Vector2> existing, float minDistance)
     {
         foreach (var pos in existing)

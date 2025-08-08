@@ -9,7 +9,10 @@ public class AsteroidGenerator : MonoBehaviour
     [SerializeField] int maxPoints = 10;
     [SerializeField] float minRadius = 10f;
     [SerializeField] float maxRadius = 30f;
-    public GameObject asteroidPrefab; // Префаб астероїда
+    /// <summary>
+    /// Reference to asteroid prefab
+    /// </summary>
+    public GameObject asteroidPrefab; 
 
     public void Start()
     {
@@ -41,7 +44,10 @@ public class AsteroidGenerator : MonoBehaviour
         // Генеруємо деталі на астероїді (тріщини, кратери)
         asteroid.GetComponent<AsteroidDetailManager>().AddDetailsToAsteroid();
     }
-
+    /// <summary>
+    /// Generates random sprite shape to make each asteroid look different
+    /// </summary>
+    /// <param name="shapeController">Reference to newly created shape</param>
     private void GenerateShape(SpriteShapeController shapeController)
     {
         Spline spline = shapeController.spline;
@@ -56,7 +62,8 @@ public class AsteroidGenerator : MonoBehaviour
             Vector2 point = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
             spline.InsertPointAt(i, point);
             spline.SetTangentMode(i, ShapeTangentMode.Continuous);
-            Vector2 tangent = new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle)) * radius * 0.4f; // 0.4f — множник згладження
+            Vector2 tangent = 0.4f * radius * new Vector2(-Mathf.Sin(angle),
+                Mathf.Cos(angle)); // 0.4f — множник згладження
 
             spline.SetLeftTangent(i, -tangent);
             spline.SetRightTangent(i, tangent);
@@ -64,7 +71,11 @@ public class AsteroidGenerator : MonoBehaviour
 
         shapeController.BakeMesh();
     }
-
+    /// <summary>
+    /// Adds collider component to asteroid that matches it's form
+    /// </summary>
+    /// <param name="shapeController">Reference to sprite shape controller of asteroid</param>
+    /// <param name="polyCollider">Reference to collider component of asteroid</param>
     private void GenerateCollider(SpriteShapeController shapeController, PolygonCollider2D polyCollider)
     {
         Spline spline = shapeController.spline;
